@@ -1,4 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from 'next/head'
+import SubscribeButton from '../components/SubscribeButton'
+import styles from './home.module.scss'
 
 export default function Home() {
   return (
@@ -6,7 +9,19 @@ export default function Home() {
       <Head>
         <title>Inicio | ig.news</title>
       </Head>
-      <h1>Hello World</h1>
+      
+      <main className={styles.contentContainer} >
+        <section className={styles.hero} >
+          <span>👏 Hey, welcome</span>
+          <h1>News about <br/> the <span>React</span> world.</h1>
+          <p>
+            Get acess to all the publications <br/>
+            <span>for $9.90 month</span>
+          </p>
+          <SubscribeButton/>
+        </section>
+        <img src="/images/woman.svg" alt="Girl coding in react :)" />
+      </main>
     </>
   )
 }
