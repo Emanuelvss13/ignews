@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import {GetServerSideProps} from 'next'
+import {GetStaticProps} from 'next'
 import Head from 'next/head'
 import SubscribeButton from '../components/SubscribeButton'
 import { stripe } from '../services/stripe'
@@ -16,7 +16,7 @@ export default function Home({product}: HomeProps) {
   return (
     <>
       <Head>
-        <title>Inicio | ig.news</title>
+        <title>Home | ig.news</title>
       </Head>
       
       <main className={styles.contentContainer} >
@@ -35,10 +35,10 @@ export default function Home({product}: HomeProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const price = await stripe.prices.retrieve('price_1JZFCaEUn0jy9jx9LXKJx9FJ')
 
-  const product ={
+  const product = {
     priceId: price.id,
     amount: new Intl.NumberFormat('en-US',{
       style: 'currency',
@@ -46,10 +46,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }).format(price.unit_amount / 100)
   }
 
-  console.log(price)
   return{
     props: {
       product
-    }
+    },
+    revalidate: 60 * 60 * 24 // 24 horas
   }
 }
