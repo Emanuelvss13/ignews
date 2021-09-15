@@ -11,20 +11,35 @@ export default NextAuth({
       scope: 'read:user'
     }),
   ],
-  jwt:{
-    signingKey: process.env.JWT_KEY
-  },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       try {
         await fauna.query(
-          q.Create(
-            q.Collection('Users'),
-            { data: { email } }
+          q.If(
+            q.Not(
+              q.Exists(
+                q.Match(
+                  q.Index('users_by_email'),
+                  q.Casefold(email)
+                )
+              )
+            ),
+            q.Create(
+              q.Collection('Users'),
+              {data: {email}}
+            ),
+            q.Get(
+              q.Match(
+                q.Index('users_by_email'),
+                q.Casefold(email)
+              )
+            )
           )
+
         )
         return true
-      } catch {
+      } catch(e) {
+        console.log(e)
         return false
       }
     },
